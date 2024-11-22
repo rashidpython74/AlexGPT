@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header .logo {
+            font-size: 24px;
+            color: #333333;
+            font-weight: bold;
+        }
+        .header .profile {
+            width: 40px;
+            height: 40px;
+            background-color: #007bff;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .main-content {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .main-content h1 {
+            font-size: 28px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .search-bar input {
+            width: 500px;
+            padding: 15px 20px;
+            border: 1px solid #cccccc;
+            border-radius: 30px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-bar input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+        }
+        .search-bar .send-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .search-bar .send-button:hover {
+            background-color: #0056b3;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .buttons .button {
+            padding: 10px 20px;
+            border: 1px solid #532929;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .buttons .button:hover {
+            background-color: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
+        }
+        .buttons .button i {
+            font-size: 16px;
+        }
+        .response-field {
+            width: 600px;
+            padding: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            font-size: 16px;
+            color: #333333;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">ChatGPT</div>
+        <div class="profile">R</div>
+    </div>
+    <div class="main-content">
+        <h1>What can I help with?</h1>
+        <div class="search-bar">
+            <input id="messageInput" type="text" placeholder="Message ChatGPT">
+            <button class="send-button" onclick="sendMessage()">Send</button>
+        </div>
+        <div class="buttons">
+            <div class="button">
+                <i class="fas fa-image"></i>
+                <span>Create image</span>
+            </div>
+            <div class="button">
+                <i class="fas fa-chart-bar"></i>
+                <span>Analyze data</span>
+            </div>
+            <div class="button">
+                <i class="fas fa-comments"></i>
+                <span>Get advice</span>
+            </div>
+            <div class="button">
+                <i class="fas fa-eye"></i>
+                <span>Analyze images</span>
+            </div>
+            <div class="button">
+                <i class="fas fa-ellipsis-h"></i>
+                <span>More</span>
+            </div>
+        </div>
+        <div id="responseField" class="response-field">
+            <!-- This is where the response from ChatGPT will be displayed -->
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById("messageInput");
+            const responseField = document.getElementById("responseField");
+            const userMessage = inputField.value.trim();
+    
+            if (!userMessage) {
+                alert("Please enter a message.");
+                return;
+            }
+    
+            // Display the user's message in the response field
+            responseField.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+    
+            // Send the message to the Flask backend
+            try {
+                const response = await fetch("http://127.0.0.1:5000/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+    
+                const data = await response.json();
+                if (response.ok) {
+                    responseField.innerHTML += `<p><strong>AlexGPT:</strong> ${data.response}</p>`;
+                } else {
+                    responseField.innerHTML += `<p><strong>Error:</strong> ${data.error}</p>`;
+                }
+            } catch (error) {
+                responseField.innerHTML += `<p><strong>Error:</strong> Could not send the message.</p>`;
+            }
+    
+            // Clear the input field
+            inputField.value = "";
+            responseField.scrollTop = responseField.scrollHeight;
+        }
+    </script>
+    
+</body>
+</html>

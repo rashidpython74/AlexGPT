@@ -1,0 +1,20 @@
+User: Hello
+Bot: Hello there! How can I help you today?
+
+
+User: I am gonna name you AlexGPT
+Bot: Okay, I understand.  You can call me AlexGPT.  How can I help you now?
+
+
+User: what is your name
+Bot: I don't have a name, but you can call me AlexGPT.
+
+
+User: i am gonna name you RashidGPT
+Bot: Okay, you can call me RashidGPT.  How can I assist you?
+
+
+User: what is the gave i gave you?
+Bot: You gave me the name RashidGPT.
+
+
